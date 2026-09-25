@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { getClube, jornadasTaca, iniciais, type Jogo } from "@/lib/liga";
+import { EscudoClube } from "@/components/EscudoClube";
+import { getClube, jornadasTaca, type Jogo } from "@/lib/liga";
 
 export const Route = createFileRoute("/clube/$slug")({
   loader: ({ params }) => {
@@ -64,13 +65,22 @@ function ClubeNaoEncontrado() {
 function Adversario({ jogo }: { jogo: Jogo }) {
   if (jogo.adversario.toLowerCase() === "indefinido") {
     return (
-      <span className="inline-flex items-center gap-2 rounded-full bg-cup-muted px-3 py-1 text-xs font-medium text-cup">
-        <span className="h-1.5 w-1.5 rounded-full bg-cup" />
-        Indefinido — a sortear
-      </span>
+      <div className="flex min-w-0 items-center gap-3">
+        <span className="font-display flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-cup-muted text-[10px] font-bold text-cup ring-1 ring-cup/25">
+          IN
+        </span>
+        <span className="text-xs font-medium text-cup">Indefinido — a sortear</span>
+      </div>
     );
   }
-  return <span className="text-sm font-medium text-foreground">{jogo.adversario}</span>;
+  return (
+    <div className="flex min-w-0 items-center gap-3">
+      <EscudoClube nome={jogo.adversario} tamanho="sm" />
+      <span className="min-w-0 text-sm font-semibold text-foreground">
+        {jogo.adversario}
+      </span>
+    </div>
+  );
 }
 
 function ClubePage() {
@@ -87,7 +97,7 @@ function ClubePage() {
 
   return (
     <div className="page-backdrop min-h-screen">
-      <div className="mx-auto max-w-3xl px-4 pb-16 sm:px-6">
+      <div className="mx-auto max-w-7xl px-4 pb-16 sm:px-6">
         <header className="pt-10 pb-8 sm:pt-14">
           <Link
             to="/"
@@ -108,9 +118,7 @@ function ClubePage() {
           </Link>
 
           <div className="mt-6 flex items-center gap-4">
-            <span className="font-display flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-primary/15 text-lg font-bold text-primary ring-1 ring-primary/25">
-              {iniciais(clube.nome)}
-            </span>
+            <EscudoClube nome={clube.nome} tamanho="lg" />
             <div>
               <h1 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
                 {clube.nome}
@@ -144,55 +152,33 @@ function ClubePage() {
           </select>
         </div>
 
-        <div className="overflow-hidden rounded-2xl border border-border bg-card">
-          <table className="w-full text-left">
-            <thead>
-              <tr className="border-b border-border bg-secondary/60">
-                <th className="px-5 py-3 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                  Jornada
-                </th>
-                <th className="px-5 py-3 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                  Adversário
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {jogos.map((jogo) => {
-                const eTaca = jornadasTaca.has(jogo.jornada);
-                return (
-                  <tr
-                    key={jogo.jornada}
-                    className={
-                      eTaca
-                        ? "border-b border-border bg-cup-muted/40 last:border-b-0"
-                        : "border-b border-border last:border-b-0 odd:bg-secondary/25"
-                    }
-                  >
-                    <td className="w-24 px-5 py-3 align-middle">
-                      <span
-                        className={
-                          eTaca
-                            ? "inline-flex h-8 w-9 items-center justify-center rounded-lg bg-cup text-xs font-bold text-cup-foreground"
-                            : "inline-flex h-8 w-9 items-center justify-center rounded-lg bg-secondary text-xs font-semibold text-secondary-foreground"
-                        }
-                      >
-                        {jogo.jornada}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3 align-middle">
-                      <Adversario jogo={jogo} />
-                      {eTaca && (
-                        <span className="ml-2 hidden text-xs font-medium text-cup sm:inline">
-                          Taça
-                        </span>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+        <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {jogos.map((jogo) => {
+            const eTaca = jornadasTaca.has(jogo.jornada);
+            return (
+              <li
+                key={jogo.jornada}
+                className={
+                  eTaca
+                    ? "flex min-h-28 flex-col justify-between rounded-xl border border-cup/30 bg-cup-muted/40 p-4"
+                    : "flex min-h-28 flex-col justify-between rounded-xl border border-border bg-card p-4"
+                }
+              >
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <span className="text-xs font-semibold text-muted-foreground uppercase">
+                    Jornada {jogo.jornada}
+                  </span>
+                  {eTaca && (
+                    <span className="rounded-md bg-cup px-2 py-1 text-[10px] font-bold text-cup-foreground uppercase">
+                      Taça
+                    </span>
+                  )}
+                </div>
+                <Adversario jogo={jogo} />
+              </li>
+            );
+          })}
+        </ul>
 
         <p className="mt-4 text-xs text-muted-foreground">
           Jornadas de taça ({[...jornadasTaca].join(", ")}) destacadas em

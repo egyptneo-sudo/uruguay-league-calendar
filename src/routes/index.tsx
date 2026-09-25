@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { liga, slugify, jornadasTaca, iniciais } from "@/lib/liga";
+import { EscudoClube } from "@/components/EscudoClube";
+import { liga, slugify, jornadasTaca } from "@/lib/liga";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -86,9 +87,7 @@ function HomePage() {
                     params={{ slug }}
                     className="card-hover group flex items-center gap-4 rounded-2xl border border-border bg-card px-5 py-4"
                   >
-                    <span className="font-display flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-sm font-bold text-primary ring-1 ring-primary/25">
-                      {iniciais(clube.nome)}
-                    </span>
+                    <EscudoClube nome={clube.nome} tamanho="md" />
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm font-semibold text-foreground group-hover:text-primary">
                         {clube.nome}
