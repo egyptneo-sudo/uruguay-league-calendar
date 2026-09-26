@@ -11,16 +11,28 @@ export interface Clube {
   jogos: Jogo[];
 }
 
+export interface TeamValue {
+  clube: string;
+  objetivo: number;
+  valor_plantel: string;
+  rendimento_fixo: string;
+}
+
 export interface LigaData {
   liga: string;
   total_jornadas: number;
   jornadas_taca: number[];
   clubes: Clube[];
+  team_values: TeamValue[];
 }
 
 export const liga = raw as unknown as LigaData;
 
 export const jornadasTaca = new Set(liga.jornadas_taca);
+
+export const teamValues = [...liga.team_values].sort(
+  (a, b) => a.objetivo - b.objetivo,
+);
 
 export function slugify(nome: string): string {
   return nome
