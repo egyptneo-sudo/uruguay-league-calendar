@@ -1,8 +1,18 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { EscudoClube } from "@/components/EscudoClube";
 import { SiteFooter } from "@/components/SiteFooter";
 import { getClube, jornadasTaca, type Jogo } from "@/lib/liga";
+import { getResultadosClient } from "@/lib/resultados-client";
+
+type ResultadoJogo = {
+  jornada: number;
+  casa: string;
+  fora: string;
+  golos_casa: number | null;
+  golos_fora: number | null;
+  jogado: boolean;
+};
 
 export const Route = createFileRoute("/clube/$slug")({
   loader: ({ params }) => {
@@ -84,9 +94,112 @@ function Adversario({ jogo }: { jogo: Jogo }) {
   );
 }
 
+function ClassificacaoResultado({
+  clubeNome,
+  jogo,
+  resultado,
+}: {
+  clubeNome: string;
+  jogo: Jogo;
+  resultado?: ResultadoJogo;
+}) {
+  if (!resultado || resultado.golos_casa == null || resultado.golos_fora == null) {
+    return <Adversario jogo={jogo} />;
+  }
+
+  const clubeFoiCasa = resultado.casa === clubeNome;
+  const golosClube = clubeFoiCasa ? resultado.golos_casa : resultado.golos_fora;
+  const golosAdversario = clubeFoiCasa ? resultado.golos_fora : resultado.golos_casa;
+  const nomeAdversario = clubeFoiCasa ? resultado.fora : resultado.casa;
+  const estadoResultado =
+    golosClube > golosAdversario ? "vitoria" : golosClube < golosAdversario ? "derrota" : "empate";
+
+  const estadoClasses = {
+    vitoria: "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+    empate: "border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300",
+    derrota: "border-red-500/30 bg-red-500/10 text-red-700 dark:text-red-300",
+  }[estadoResultado];
+
+  return (
+    <div className={"rounded-lg border p-2.5 ".concat(estadoClasses)}>
+      <div className="mb-2 flex items-center justify-between gap-2 text-[10px] font-bold uppercase tracking-[0.14em] text-current/80">
+        <span>Jogado</span>
+        <span>✓</span>
+      </div>
+
+      <div className="flex items-center justify-between gap-2 text-sm font-semibold">
+        <div className="flex min-w-0 items-center gap-2">
+          <EscudoClube nome={clubeNome} tamanho="sm" />
+          <span className="truncate">{clubeNome}</span>
+        </div>
+        <span className="shrink-0 text-base font-black">{golosClube} - {golosAdversario}</span>
+        <div className="flex min-w-0 items-center gap-2">
+          <EscudoClube nome={nomeAdversario} tamanho="sm" />
+          <span className="truncate">{nomeAdversario}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ClubePage() {
   const { clube } = Route.useLoaderData();
   const [filtroJornada, setFiltroJornada] = useState<number | "todas">("todas");
+  const [resultados, setResultados] = useState<Record<number, ResultadoJogo>>({});
+  const [fetchError, setFetchError] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchResultados = async () => {
+      try {
+        const client = getResultadosClient();
+        const { data, error } = await client
+          .from("resultados")
+          .select("jornada, casa, fora, golos_casa, golos_fora, jogado")
+          .eq("jogado", true)
+          .not("golos_casa", "is", null)
+          .not("golos_fora", "is", null)
+          .or(`casa.eq.${clube.nome},fora.eq.${clube.nome}`);
+
+        if (error) throw error;
+
+        const mapa: Record<number, ResultadoJogo> = {};
+        for (const item of data ?? []) {
+          const jornada = Number(item.jornada);
+          if (!Number.isFinite(jornada)) continue;
+          if (item.casa !== clube.nome && item.fora !== clube.nome) continue;
+          mapa[jornada] = item as ResultadoJogo;
+        }
+
+        if (isMounted) {
+          setResultados(mapa);
+          setFetchError(false);
+        }
+      } catch {
+        if (isMounted) {
+          setResultados({});
+          setFetchError(true);
+        }
+      }
+    };
+
+    void fetchResultados();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [clube.nome]);
+
+  const proximoJogoJornada = useMemo(() => {
+    if (fetchError) return null;
+
+    const proximo = clube.jogos
+      .filter((jogo) => jogo.adversario !== "Indefinido")
+      .find((jogo) => !resultados[jogo.jornada]);
+
+    return proximo?.jornada ?? null;
+  }, [clube.jogos, fetchError, resultados]);
 
   const jogos = useMemo(
     () =>
@@ -156,14 +269,23 @@ function ClubePage() {
         <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {jogos.map((jogo) => {
             const eTaca = jornadasTaca.has(jogo.jornada);
+            const resultado = resultados[jogo.jornada];
+            const eJogado = Boolean(resultado && resultado.jogado && resultado.golos_casa !== null && resultado.golos_fora !== null);
+            const eProximo = !eJogado && jogo.adversario !== "Indefinido" && proximoJogoJornada === jogo.jornada;
+
             return (
               <li
                 key={jogo.jornada}
-                className={
+                className={[
+                  "flex min-h-28 flex-col justify-between rounded-xl border p-4 transition-colors",
                   eTaca
-                    ? "flex min-h-28 flex-col justify-between rounded-xl border border-cup/30 bg-cup-muted/40 p-4"
-                    : "flex min-h-28 flex-col justify-between rounded-xl border border-border bg-card p-4"
-                }
+                    ? "border-cup/30 bg-cup-muted/40"
+                    : eJogado
+                      ? "border-border bg-card/80"
+                      : eProximo
+                        ? "border-blue-500/40 bg-blue-500/5 shadow-sm shadow-blue-500/10"
+                        : "border-border bg-card",
+                ].join(" ")}
               >
                 <div className="mb-4 flex items-center justify-between gap-3">
                   <span className="text-xs font-semibold text-muted-foreground uppercase">
@@ -172,6 +294,14 @@ function ClubePage() {
                   {eTaca ? (
                     <span className="rounded-md bg-cup px-2 py-1 text-[10px] font-bold text-cup-foreground uppercase">
                       Taça
+                    </span>
+                  ) : eJogado ? (
+                    <span className="rounded-md bg-emerald-500/15 px-2 py-1 text-[10px] font-bold text-emerald-700 dark:text-emerald-300 uppercase">
+                      ✓ Jogado
+                    </span>
+                  ) : eProximo ? (
+                    <span className="rounded-md bg-blue-500/15 px-2 py-1 text-[10px] font-bold text-blue-700 dark:text-blue-300 uppercase">
+                      Próximo
                     </span>
                   ) : jogo.casa === true ? (
                     <span className="rounded-md bg-primary/15 px-2 py-1 text-[10px] font-bold text-primary uppercase">
@@ -183,7 +313,12 @@ function ClubePage() {
                     </span>
                   ) : null}
                 </div>
-                <Adversario jogo={jogo} />
+
+                {eJogado ? (
+                  <ClassificacaoResultado clubeNome={clube.nome} jogo={jogo} resultado={resultado} />
+                ) : (
+                  <Adversario jogo={jogo} />
+                )}
               </li>
             );
           })}
