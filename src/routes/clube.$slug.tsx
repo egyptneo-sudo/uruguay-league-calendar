@@ -168,11 +168,19 @@ function ClubePage() {
                   <span className="text-xs font-semibold text-muted-foreground uppercase">
                     Jornada {jogo.jornada}
                   </span>
-                  {eTaca && (
+                  {eTaca ? (
                     <span className="rounded-md bg-cup px-2 py-1 text-[10px] font-bold text-cup-foreground uppercase">
                       Taça
                     </span>
-                  )}
+                  ) : jogo.casa === true ? (
+                    <span className="rounded-md bg-primary/15 px-2 py-1 text-[10px] font-bold text-primary uppercase">
+                      🏠 Casa
+                    </span>
+                  ) : jogo.casa === false ? (
+                    <span className="rounded-md bg-secondary px-2 py-1 text-[10px] font-bold text-secondary-foreground uppercase">
+                      ✈️ Fora
+                    </span>
+                  ) : null}
                 </div>
                 <Adversario jogo={jogo} />
               </li>
