@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { AppSidebar } from "../components/AppSidebar";
+import { SidebarInset, SidebarProvider } from "../components/ui/sidebar";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
@@ -140,10 +141,12 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AppSidebar />
-      <main className="ml-20 min-h-screen md:ml-64">
-        <Outlet />
-      </main>
+      <SidebarProvider>
+        <AppSidebar />
+        <SidebarInset className="min-h-screen bg-background">
+          <Outlet />
+        </SidebarInset>
+      </SidebarProvider>
     </QueryClientProvider>
   );
 }

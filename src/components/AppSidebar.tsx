@@ -1,53 +1,76 @@
 import { BarChart3, CalendarDays, Trophy } from "lucide-react";
-import { Link } from "@tanstack/react-router";
-import { cn } from "@/lib/utils";
-
-const itemClass =
-  "flex h-12 items-center justify-center gap-3 rounded-lg px-3 text-sm font-semibold text-muted-foreground transition-colors hover:bg-accent hover:text-foreground md:justify-start";
+import { Link, useLocation } from "@tanstack/react-router";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 
 export function AppSidebar() {
-  return (
-    <aside className="fixed inset-y-0 left-0 z-40 flex w-20 flex-col border-r border-border bg-card/95 px-3 py-5 backdrop-blur md:w-64 md:px-4 md:py-7">
-      <Link
-        to="/"
-        aria-label="Liga Uruguaia"
-        className="mb-8 flex h-12 items-center justify-center gap-3 text-primary md:justify-start md:px-3"
-      >
-        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground">
-          <Trophy className="h-5 w-5" aria-hidden="true" />
-        </span>
-        <span className="font-display hidden text-lg font-bold text-foreground md:block">
-          Liga Uruguaia
-        </span>
-      </Link>
+  const location = useLocation();
+  const isCalendar = location.pathname === "/" || location.pathname.startsWith("/clube/");
+  const isTeamValues = location.pathname.startsWith("/team-values");
 
-      <nav aria-label="Navegação principal" className="space-y-2">
-        <Link
-          to="/"
-          activeOptions={{ exact: true }}
-          aria-label="Calendário"
-          title="Calendário"
-          className={itemClass}
-          activeProps={{
-            className: cn(itemClass, "bg-primary/15 text-primary hover:bg-primary/20 hover:text-primary"),
-          }}
-        >
-          <CalendarDays className="h-5 w-5 shrink-0" aria-hidden="true" />
-          <span className="hidden md:block">Calendário</span>
-        </Link>
-        <Link
-          to="/team-values"
-          aria-label="Team Values"
-          title="Team Values"
-          className={itemClass}
-          activeProps={{
-            className: cn(itemClass, "bg-primary/15 text-primary hover:bg-primary/20 hover:text-primary"),
-          }}
-        >
-          <BarChart3 className="h-5 w-5 shrink-0" aria-hidden="true" />
-          <span className="hidden md:block">Team Values</span>
-        </Link>
-      </nav>
-    </aside>
+  return (
+    <Sidebar side="left" variant="sidebar" collapsible="icon" className="border-r border-border bg-card/95">
+      <SidebarHeader className="border-b border-border/60 p-2">
+        <div className="flex items-center justify-between gap-2">
+          <Link
+            to="/"
+            aria-label="Liga Uruguaia"
+            className="flex min-w-0 flex-1 items-center gap-3 overflow-hidden text-primary"
+          >
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground">
+              <Trophy className="h-4 w-4" aria-hidden="true" />
+            </span>
+            <span className="hidden truncate font-display text-base font-bold text-foreground group-data-[collapsible=icon]:hidden md:block">
+              Liga Uruguaia
+            </span>
+          </Link>
+
+          <SidebarTrigger className="h-8 w-8 shrink-0" />
+        </div>
+      </SidebarHeader>
+
+      <SidebarContent className="p-2">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={isCalendar}
+              tooltip="Calendário"
+              className="group-data-[collapsible=icon]:justify-center"
+            >
+              <Link to="/" aria-label="Calendário" className="flex w-full items-center gap-3">
+                <CalendarDays className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <span className="hidden truncate group-data-[collapsible=icon]:hidden md:inline">
+                  Calendário
+                </span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={isTeamValues}
+              tooltip="Team Values"
+              className="group-data-[collapsible=icon]:justify-center"
+            >
+              <Link to="/team-values" aria-label="Team Values" className="flex w-full items-center gap-3">
+                <BarChart3 className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <span className="hidden truncate group-data-[collapsible=icon]:hidden md:inline">
+                  Team Values
+                </span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarContent>
+    </Sidebar>
   );
 }
