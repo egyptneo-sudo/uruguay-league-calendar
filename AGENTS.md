@@ -10,3 +10,4 @@
 <!-- LOVABLE:END -->
 
 - Club crest binaries are served through project CDN asset pointers because the source storage bucket is private and public buckets are workspace-blocked.
+- Shared primary navigation lives in the root route so Calendar, Team Values, and club pages keep one fixed responsive sidebar.
