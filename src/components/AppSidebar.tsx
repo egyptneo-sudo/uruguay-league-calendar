@@ -1,5 +1,7 @@
-import { BarChart3, CalendarDays, Trophy } from "lucide-react";
+import { useEffect, useState } from "react";
+import { BarChart3, CalendarDays, Settings, Trophy } from "lucide-react";
 import { Link, useLocation } from "@tanstack/react-router";
+import type { Session } from "@supabase/supabase-js";
 import {
   Sidebar,
   SidebarContent,
@@ -9,11 +11,32 @@ import {
   SidebarMenuItem,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { getResultadosClient } from "@/lib/resultados-client";
 
 export function AppSidebar() {
   const location = useLocation();
+  const [session, setSession] = useState<Session | null>(null);
+
+  useEffect(() => {
+    try {
+      const client = getResultadosClient();
+      client.auth.getSession().then(({ data }) => setSession(data.session ?? null));
+      const {
+        data: { subscription },
+      } = client.auth.onAuthStateChange((_event, nextSession) => {
+        setSession(nextSession ?? null);
+      });
+
+      return () => subscription.unsubscribe();
+    } catch {
+      setSession(null);
+      return undefined;
+    }
+  }, []);
+
   const isCalendar = location.pathname === "/" || location.pathname.startsWith("/clube/");
   const isTeamValues = location.pathname.startsWith("/team-values");
+  const isAdmin = location.pathname.startsWith("/admin");
 
   return (
     <Sidebar side="left" variant="sidebar" collapsible="icon" className="border-r border-border bg-card/95">
@@ -69,6 +92,24 @@ export function AppSidebar() {
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
+
+          {session && (
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={isAdmin}
+                tooltip="Admin"
+                className="group-data-[collapsible=icon]:justify-center"
+              >
+                <Link to="/admin" aria-label="Admin" className="flex w-full items-center gap-3">
+                  <Settings className="h-4 w-4 shrink-0" aria-hidden="true" />
+                  <span className="hidden truncate group-data-[collapsible=icon]:hidden md:inline">
+                    Admin
+                  </span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )}
         </SidebarMenu>
       </SidebarContent>
     </Sidebar>

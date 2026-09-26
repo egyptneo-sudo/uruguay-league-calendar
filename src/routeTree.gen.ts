@@ -10,12 +10,24 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as TeamValuesRouteImport } from './routes/team-values'
 import { Route as ClubeSlugRouteImport } from './routes/clube.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TeamValuesRoute = TeamValuesRouteImport.update({
@@ -31,30 +43,38 @@ const ClubeSlugRoute = ClubeSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/login': typeof LoginRoute
   '/team-values': typeof TeamValuesRoute
   '/clube/$slug': typeof ClubeSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/login': typeof LoginRoute
   '/team-values': typeof TeamValuesRoute
   '/clube/$slug': typeof ClubeSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/login': typeof LoginRoute
   '/team-values': typeof TeamValuesRoute
   '/clube/$slug': typeof ClubeSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/team-values' | '/clube/$slug'
+  fullPaths: '/' | '/admin' | '/login' | '/team-values' | '/clube/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/team-values' | '/clube/$slug'
-  id: '__root__' | '/' | '/team-values' | '/clube/$slug'
+  to: '/' | '/admin' | '/login' | '/team-values' | '/clube/$slug'
+  id: '__root__' | '/' | '/admin' | '/login' | '/team-values' | '/clube/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
+  LoginRoute: typeof LoginRoute
   TeamValuesRoute: typeof TeamValuesRoute
   ClubeSlugRoute: typeof ClubeSlugRoute
 }
@@ -66,6 +86,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/team-values': {
@@ -87,6 +121,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
+  LoginRoute: LoginRoute,
   TeamValuesRoute: TeamValuesRoute,
   ClubeSlugRoute: ClubeSlugRoute,
 }
