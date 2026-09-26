@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as ClassificacaoRouteImport } from './routes/classificacao'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as SimuladorRouteImport } from './routes/simulador'
 import { Route as TacaRouteImport } from './routes/taca'
 import { Route as TeamValuesRouteImport } from './routes/team-values'
 import { Route as ClubeSlugRouteImport } from './routes/clube.$slug'
@@ -37,6 +38,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SimuladorRoute = SimuladorRouteImport.update({
+  id: '/simulador',
+  path: '/simulador',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TacaRoute = TacaRouteImport.update({
   id: '/taca',
   path: '/taca',
@@ -58,6 +64,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/classificacao': typeof ClassificacaoRoute
   '/login': typeof LoginRoute
+  '/simulador': typeof SimuladorRoute
   '/taca': typeof TacaRoute
   '/team-values': typeof TeamValuesRoute
   '/clube/$slug': typeof ClubeSlugRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/classificacao': typeof ClassificacaoRoute
   '/login': typeof LoginRoute
+  '/simulador': typeof SimuladorRoute
   '/taca': typeof TacaRoute
   '/team-values': typeof TeamValuesRoute
   '/clube/$slug': typeof ClubeSlugRoute
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/classificacao': typeof ClassificacaoRoute
   '/login': typeof LoginRoute
+  '/simulador': typeof SimuladorRoute
   '/taca': typeof TacaRoute
   '/team-values': typeof TeamValuesRoute
   '/clube/$slug': typeof ClubeSlugRoute
@@ -88,6 +97,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/classificacao'
     | '/login'
+    | '/simulador'
     | '/taca'
     | '/team-values'
     | '/clube/$slug'
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/classificacao'
     | '/login'
+    | '/simulador'
     | '/taca'
     | '/team-values'
     | '/clube/$slug'
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/classificacao'
     | '/login'
+    | '/simulador'
     | '/taca'
     | '/team-values'
     | '/clube/$slug'
@@ -116,6 +128,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   ClassificacaoRoute: typeof ClassificacaoRoute
   LoginRoute: typeof LoginRoute
+  SimuladorRoute: typeof SimuladorRoute
   TacaRoute: typeof TacaRoute
   TeamValuesRoute: typeof TeamValuesRoute
   ClubeSlugRoute: typeof ClubeSlugRoute
@@ -151,6 +164,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/simulador': {
+      id: '/simulador'
+      path: '/simulador'
+      fullPath: '/simulador'
+      preLoaderRoute: typeof SimuladorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/taca': {
       id: '/taca'
       path: '/taca'
@@ -180,6 +200,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   ClassificacaoRoute: ClassificacaoRoute,
   LoginRoute: LoginRoute,
+  SimuladorRoute: SimuladorRoute,
   TacaRoute: TacaRoute,
   TeamValuesRoute: TeamValuesRoute,
   ClubeSlugRoute: ClubeSlugRoute,

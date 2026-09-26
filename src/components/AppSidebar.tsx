@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BarChart3, CalendarDays, Settings, Trophy } from "lucide-react";
+import { BarChart3, CalendarDays, FlaskConical, Settings, Trophy } from "lucide-react";
 import { Link, useLocation } from "@tanstack/react-router";
 import type { Session } from "@supabase/supabase-js";
 import {
@@ -36,6 +36,7 @@ export function AppSidebar() {
 
   const isCalendar = location.pathname === "/" || location.pathname.startsWith("/clube/");
   const isClassificacao = location.pathname.startsWith("/classificacao");
+  const isSimulador = location.pathname.startsWith("/simulador");
   const isTaca = location.pathname.startsWith("/taca");
   const isTeamValues = location.pathname.startsWith("/team-values");
   const isAdmin = location.pathname.startsWith("/admin");
@@ -90,6 +91,22 @@ export function AppSidebar() {
                 <Trophy className="h-4 w-4 shrink-0" aria-hidden="true" />
                 <span className="hidden truncate group-data-[collapsible=icon]:hidden md:inline">
                   Classificação
+                </span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={isSimulador}
+              tooltip="Simulador"
+              className="group-data-[collapsible=icon]:justify-center"
+            >
+              <Link to="/simulador" aria-label="Simulador" className="flex w-full items-center gap-3">
+                <FlaskConical className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <span className="hidden truncate group-data-[collapsible=icon]:hidden md:inline">
+                  Simulador
                 </span>
               </Link>
             </SidebarMenuButton>
