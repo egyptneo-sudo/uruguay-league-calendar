@@ -3,6 +3,7 @@ import raw from "@/data/liga-uruguai.json";
 export interface Jogo {
   jornada: number;
   adversario: string;
+  casa: boolean | null;
 }
 
 export interface Clube {
