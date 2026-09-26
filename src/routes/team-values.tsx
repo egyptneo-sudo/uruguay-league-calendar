@@ -25,9 +25,9 @@ export const Route = createFileRoute("/team-values")({
 });
 
 function objetivoClass(objetivo: number) {
-  if (objetivo <= 3) return "bg-emerald-500/15 text-emerald-400 ring-emerald-400/25";
-  if (objetivo <= 8) return "bg-amber-500/15 text-amber-300 ring-amber-300/25";
-  return "bg-red-500/15 text-red-400 ring-red-400/25";
+  if (objetivo <= 3) return "bg-objective-high-muted text-objective-high ring-objective-high/25";
+  if (objetivo <= 8) return "bg-objective-mid-muted text-objective-mid ring-objective-mid/25";
+  return "bg-objective-low-muted text-objective-low ring-objective-low/25";
 }
 
 function ObjetivoBadge({ objetivo }: { objetivo: number }) {

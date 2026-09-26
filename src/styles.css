@@ -42,6 +42,12 @@
   --color-cup-foreground: var(--cup-foreground);
   --color-cup-muted: var(--cup-muted);
   --color-glow: var(--glow);
+  --color-objective-high: var(--objective-high);
+  --color-objective-high-muted: var(--objective-high-muted);
+  --color-objective-mid: var(--objective-mid);
+  --color-objective-mid-muted: var(--objective-mid-muted);
+  --color-objective-low: var(--objective-low);
+  --color-objective-low-muted: var(--objective-low-muted);
 }
 
 :root {
@@ -69,6 +75,12 @@
   --cup-foreground: oklch(0.19 0.05 82);
   --cup-muted: oklch(0.8 0.14 82 / 14%);
   --glow: oklch(0.66 0.17 254 / 35%);
+  --objective-high: oklch(0.76 0.16 155);
+  --objective-high-muted: oklch(0.76 0.16 155 / 15%);
+  --objective-mid: oklch(0.82 0.15 85);
+  --objective-mid-muted: oklch(0.82 0.15 85 / 15%);
+  --objective-low: oklch(0.7 0.19 25);
+  --objective-low-muted: oklch(0.7 0.19 25 / 15%);
 }
 
 @layer base {
