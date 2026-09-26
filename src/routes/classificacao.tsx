@@ -3,6 +3,7 @@ import { Trophy } from "lucide-react";
 import { useEffect, useState } from "react";
 import { EscudoClube } from "@/components/EscudoClube";
 import { SiteFooter } from "@/components/SiteFooter";
+import { useControladores } from "@/lib/controladores";
 import { liga } from "@/lib/liga";
 import { getResultadosClient } from "@/lib/resultados-client";
 import { cn } from "@/lib/utils";
@@ -129,6 +130,7 @@ export const Route = createFileRoute("/classificacao")({
 });
 
 function ClassificacaoPage() {
+  const { data: controladores } = useControladores();
   const [rows, setRows] = useState<EstatisticaClube[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -236,7 +238,14 @@ function ClassificacaoPage() {
                           <EscudoClube nome={item.clube} tamanho="sm" />
                         </td>
                         <td className="px-3 py-3 text-sm font-semibold text-foreground sm:px-4">
-                          <span className="inline-flex items-center gap-2">{item.clube}</span>
+                          <div className="flex flex-col">
+                            <span className="inline-flex items-center gap-2">{item.clube}</span>
+                            {controladores?.get(item.clube) ? (
+                              <span className="mt-1 text-[11px] font-normal text-muted-foreground">
+                                {controladores.get(item.clube)}
+                              </span>
+                            ) : null}
+                          </div>
                         </td>
                         <td className="px-3 py-3 text-sm text-foreground sm:px-4">{item.pj}</td>
                         <td className="hidden px-3 py-3 text-sm text-foreground md:table-cell sm:px-4">{item.v}</td>

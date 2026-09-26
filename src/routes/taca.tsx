@@ -3,6 +3,7 @@ import { Trophy } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { EscudoClube } from "@/components/EscudoClube";
 import { SiteFooter } from "@/components/SiteFooter";
+import { useControladores } from "@/lib/controladores";
 import { liga } from "@/lib/liga";
 import { getResultadosClient } from "@/lib/resultados-client";
 import { getJogosDaJornada } from "@/lib/taca";
@@ -240,9 +241,12 @@ function getResultadoParaJogo(
 }
 
 function TacaCard({ jogo }: { jogo: PartidaDisplay }) {
+  const { data: controladores } = useControladores();
   const casa = jogo.casa ?? "";
   const fora = jogo.fora ?? "";
   const resultado = jogo.resultado;
+  const casaControlador = controladores?.get(casa) ?? "";
+  const foraControlador = controladores?.get(fora) ?? "";
 
   const isIndefinido = !casa || !fora;
   const isJogado = Boolean(
@@ -261,7 +265,7 @@ function TacaCard({ jogo }: { jogo: PartidaDisplay }) {
       : null;
 
   const cardStyle = cn(
-    "rounded-xl border p-3 transition-colors",
+    "min-w-[260px] rounded-xl border px-4 py-3 transition-colors",
     isIndefinido && "border-border/70 bg-slate-900/40 text-slate-300",
     !isIndefinido && !isJogado && "border-primary/20 bg-card text-foreground shadow-sm",
     isJogado && "border-border bg-card",
@@ -269,51 +273,67 @@ function TacaCard({ jogo }: { jogo: PartidaDisplay }) {
 
   return (
     <div className={cardStyle}>
-      <div className="flex items-center justify-between gap-3">
-        <div
-          className={cn(
-            "flex min-w-0 flex-1 items-center gap-2",
-            isJogado && vencedor === casa && "text-emerald-600 dark:text-emerald-400",
-            isJogado && vencedor !== casa && vencedor !== null && "text-muted-foreground opacity-60",
-            isJogado && vencedor === null && "text-foreground",
-            isIndefinido && "text-slate-300",
-          )}
-        >
-          {!isIndefinido ? <EscudoClube nome={casa} tamanho="sm" /> : <div className="grid h-7 w-7 place-items-center rounded-full border border-border/60 bg-slate-800/70 text-[10px] font-bold text-slate-300">?</div>}
-          <span className="min-w-0 truncate text-sm font-semibold">{isIndefinido ? "?" : casa}</span>
+      <div className="relative flex flex-col gap-2">
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2 text-left">
+            {!isIndefinido ? <EscudoClube nome={casa} tamanho="sm" /> : <div className="grid h-6 w-6 place-items-center rounded-full border border-border/60 bg-slate-800/70 text-[10px] font-bold text-slate-300">?</div>}
+            <span
+              title={casaControlador ? `Controlador: ${casaControlador}` : undefined}
+              className={cn(
+                "text-sm",
+                isJogado && vencedor === casa && "text-foreground",
+                isJogado && vencedor !== casa && vencedor !== null && "text-muted-foreground",
+                isJogado && vencedor === null && "text-foreground",
+                isIndefinido && "text-slate-300",
+              )}
+            >
+              {isIndefinido ? "?" : casa}
+            </span>
+          </div>
+          {casaControlador ? (
+            <span className="pl-8 text-xs text-muted-foreground">{casaControlador}</span>
+          ) : null}
         </div>
 
-        <div className="flex min-w-[88px] items-center justify-center">
+        <div className="flex min-h-[20px] items-center justify-center">
           {isIndefinido ? (
             <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-300">Aguarda sorteio</span>
           ) : isJogado && casaGolos != null && foraGolos != null ? (
-            <span className={cn("text-sm font-black tabular-nums", vencedor === casa && "text-emerald-600 dark:text-emerald-400")}>{casaGolos} - {foraGolos}</span>
+            <span className={cn("text-sm font-black tabular-nums", vencedor === casa && "text-emerald-600 dark:text-emerald-400", vencedor === null && "text-foreground")}>{casaGolos} - {foraGolos}</span>
           ) : (
-            <span className="text-sm font-bold text-primary">vs</span>
+            <span className="text-xs font-medium text-muted-foreground">vs</span>
           )}
         </div>
 
-        <div
-          className={cn(
-            "flex min-w-0 flex-1 items-center justify-end gap-2",
-            isJogado && vencedor === fora && "text-emerald-600 dark:text-emerald-400",
-            isJogado && vencedor !== fora && vencedor !== null && "text-muted-foreground opacity-60",
-            isJogado && vencedor === null && "text-foreground",
-            isIndefinido && "text-slate-300",
-          )}
-        >
-          <span className="min-w-0 truncate text-right text-sm font-semibold">{isIndefinido ? "?" : fora}</span>
-          {!isIndefinido ? <EscudoClube nome={fora} tamanho="sm" /> : <div className="grid h-7 w-7 place-items-center rounded-full border border-border/60 bg-slate-800/70 text-[10px] font-bold text-slate-300">?</div>}
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2 text-left">
+            {!isIndefinido ? <EscudoClube nome={fora} tamanho="sm" /> : <div className="grid h-6 w-6 place-items-center rounded-full border border-border/60 bg-slate-800/70 text-[10px] font-bold text-slate-300">?</div>}
+            <span
+              title={foraControlador ? `Controlador: ${foraControlador}` : undefined}
+              className={cn(
+                "text-sm",
+                isJogado && vencedor === fora && "text-foreground",
+                isJogado && vencedor !== fora && vencedor !== null && "text-muted-foreground",
+                isJogado && vencedor === null && "text-foreground",
+                isIndefinido && "text-slate-300",
+              )}
+            >
+              {isIndefinido ? "?" : fora}
+            </span>
+          </div>
+          {foraControlador ? (
+            <span className="pl-8 text-xs text-muted-foreground">{foraControlador}</span>
+          ) : null}
         </div>
+
+        {isJogado && (
+          <div className="absolute right-0 top-0">
+            <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-emerald-600 dark:text-emerald-400">
+              FT
+            </span>
+          </div>
+        )}
       </div>
-
-      {isJogado && (
-        <div className="mt-2 flex items-center justify-end">
-          <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-emerald-600 dark:text-emerald-400">
-            FT
-          </span>
-        </div>
-      )}
     </div>
   );
 }

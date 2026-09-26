@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { EscudoClube } from "@/components/EscudoClube";
 import { SiteFooter } from "@/components/SiteFooter";
+import { useControladores } from "@/lib/controladores";
 import { liga, slugify, jornadasTaca } from "@/lib/liga";
 
 export const Route = createFileRoute("/")({
@@ -27,6 +28,7 @@ export const Route = createFileRoute("/")({
 });
 
 function HomePage() {
+  const { data: controladores } = useControladores();
   const [busca, setBusca] = useState("");
 
   const clubes = useMemo(() => {
@@ -81,6 +83,7 @@ function HomePage() {
           <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {clubes.map((clube) => {
               const slug = slugify(clube.nome);
+              const controlador = controladores?.get(clube.nome) ?? "";
               return (
                 <li key={clube.nome}>
                   <Link
@@ -93,8 +96,8 @@ function HomePage() {
                       <span className="block truncate text-sm font-semibold text-foreground group-hover:text-primary">
                         {clube.nome}
                       </span>
-                      <span className="mt-0.5 block text-xs text-muted-foreground">
-                        {clube.jogos.length} jornadas
+                      <span className="mt-0.5 block text-[11px] text-muted-foreground">
+                        {controlador || `${clube.jogos.length} jornadas`}
                       </span>
                     </span>
                     <svg

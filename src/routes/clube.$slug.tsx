@@ -1,7 +1,9 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { User } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { EscudoClube } from "@/components/EscudoClube";
 import { SiteFooter } from "@/components/SiteFooter";
+import { useControladores } from "@/lib/controladores";
 import { getClube, jornadasTaca, type Jogo } from "@/lib/liga";
 import { getResultadosClient } from "@/lib/resultados-client";
 
@@ -73,7 +75,9 @@ function ClubeNaoEncontrado() {
   );
 }
 
-function Adversario({ jogo }: { jogo: Jogo }) {
+function Adversario({ jogo, controladores }: { jogo: Jogo; controladores?: Map<string, string> }) {
+  const controlador = controladores?.get(jogo.adversario) ?? "";
+
   if (jogo.adversario.toLowerCase() === "indefinido") {
     return (
       <div className="flex min-w-0 items-center gap-3">
@@ -85,11 +89,16 @@ function Adversario({ jogo }: { jogo: Jogo }) {
     );
   }
   return (
-    <div className="flex min-w-0 items-center gap-3">
-      <EscudoClube nome={jogo.adversario} tamanho="sm" />
-      <span className="min-w-0 text-sm font-semibold text-foreground">
-        {jogo.adversario}
-      </span>
+    <div className="flex min-w-0 flex-col gap-1">
+      <div className="flex min-w-0 items-center gap-3">
+        <EscudoClube nome={jogo.adversario} tamanho="sm" />
+        <span className="min-w-0 text-sm font-semibold text-foreground">
+          {jogo.adversario}
+        </span>
+      </div>
+      {controlador ? (
+        <span className="ml-9 text-[10px] text-muted-foreground">{controlador}</span>
+      ) : null}
     </div>
   );
 }
@@ -98,10 +107,12 @@ function ClassificacaoResultado({
   clubeNome,
   jogo,
   resultado,
+  controladores,
 }: {
   clubeNome: string;
   jogo: Jogo;
   resultado?: ResultadoJogo;
+  controladores?: Map<string, string>;
 }) {
   if (!resultado || resultado.golos_casa == null || resultado.golos_fora == null) {
     return <Adversario jogo={jogo} />;
@@ -111,6 +122,7 @@ function ClassificacaoResultado({
   const golosClube = clubeFoiCasa ? resultado.golos_casa : resultado.golos_fora;
   const golosAdversario = clubeFoiCasa ? resultado.golos_fora : resultado.golos_casa;
   const nomeAdversario = clubeFoiCasa ? resultado.fora : resultado.casa;
+  const controladorAdversario = controladores?.get(nomeAdversario) ?? "";
   const estadoResultado =
     golosClube > golosAdversario ? "vitoria" : golosClube < golosAdversario ? "derrota" : "empate";
 
@@ -133,9 +145,14 @@ function ClassificacaoResultado({
           <span className="truncate">{clubeNome}</span>
         </div>
         <span className="shrink-0 text-base font-black">{golosClube} - {golosAdversario}</span>
-        <div className="flex min-w-0 items-center gap-2">
-          <EscudoClube nome={nomeAdversario} tamanho="sm" />
-          <span className="truncate">{nomeAdversario}</span>
+        <div className="flex min-w-0 flex-col items-end gap-1">
+          <div className="flex min-w-0 items-center gap-2">
+            <span className="truncate">{nomeAdversario}</span>
+            <EscudoClube nome={nomeAdversario} tamanho="sm" />
+          </div>
+          {controladorAdversario ? (
+            <span className="text-[10px] text-muted-foreground">{controladorAdversario}</span>
+          ) : null}
         </div>
       </div>
     </div>
@@ -144,9 +161,12 @@ function ClassificacaoResultado({
 
 function ClubePage() {
   const { clube } = Route.useLoaderData();
+  const { data: controladores } = useControladores();
   const [filtroJornada, setFiltroJornada] = useState<number | "todas">("todas");
   const [resultados, setResultados] = useState<Record<number, ResultadoJogo>>({});
   const [fetchError, setFetchError] = useState(false);
+
+  const controladorClube = controladores?.get(clube.nome) ?? "";
 
   useEffect(() => {
     let isMounted = true;
@@ -237,6 +257,12 @@ function ClubePage() {
               <h1 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
                 {clube.nome}
               </h1>
+              {controladorClube ? (
+                <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <User className="h-3.5 w-3.5" aria-hidden="true" />
+                  <span>{controladorClube}</span>
+                </div>
+              ) : null}
               <p className="mt-1 text-sm text-muted-foreground">
                 {clube.jogos.length} jornadas · {jornadasTaca.size} jornadas de
                 taça
@@ -315,9 +341,14 @@ function ClubePage() {
                 </div>
 
                 {eJogado ? (
-                  <ClassificacaoResultado clubeNome={clube.nome} jogo={jogo} resultado={resultado} />
+                  <ClassificacaoResultado
+                    clubeNome={clube.nome}
+                    jogo={jogo}
+                    resultado={resultado}
+                    controladores={controladores}
+                  />
                 ) : (
-                  <Adversario jogo={jogo} />
+                  <Adversario jogo={jogo} controladores={controladores} />
                 )}
               </li>
             );

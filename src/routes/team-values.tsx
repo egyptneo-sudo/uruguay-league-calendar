@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { EscudoClube } from "@/components/EscudoClube";
 import { SiteFooter } from "@/components/SiteFooter";
+import { useControladores } from "@/lib/controladores";
 import { teamValues, type TeamValue } from "@/lib/liga";
 import { cn } from "@/lib/utils";
 
@@ -43,16 +44,22 @@ function ObjetivoBadge({ objetivo }: { objetivo: number }) {
   );
 }
 
-function Clube({ item }: { item: TeamValue }) {
+function Clube({ item, controlador }: { item: TeamValue; controlador?: string }) {
   return (
-    <div className="flex min-w-0 items-center gap-3">
-      <EscudoClube nome={item.clube} tamanho="sm" />
-      <span className="min-w-0 font-semibold text-foreground">{item.clube}</span>
+    <div className="flex min-w-0 flex-col gap-1">
+      <div className="flex min-w-0 items-center gap-3">
+        <EscudoClube nome={item.clube} tamanho="sm" />
+        <span className="min-w-0 font-semibold text-foreground">{item.clube}</span>
+      </div>
+      {controlador ? (
+        <span className="ml-9 text-[11px] text-muted-foreground">{controlador}</span>
+      ) : null}
     </div>
   );
 }
 
 function TeamValuesPage() {
+  const { data: controladores } = useControladores();
   return (
     <div className="page-backdrop min-h-screen">
       <div className="mx-auto max-w-6xl px-4 pb-16 sm:px-6">
@@ -76,7 +83,7 @@ function TeamValuesPage() {
             <tbody>
               {teamValues.map((item) => (
                 <tr key={item.clube} className="border-t border-border transition-colors hover:bg-accent/45">
-                  <td className="px-5 py-4"><Clube item={item} /></td>
+                  <td className="px-5 py-4"><Clube item={item} controlador={controladores?.get(item.clube)} /></td>
                   <td className="px-5 py-4"><ObjetivoBadge objetivo={item.objetivo} /></td>
                   <td className="px-5 py-4 text-sm font-medium text-foreground">{item.valor_plantel}</td>
                   <td className="px-5 py-4 text-sm font-medium text-foreground">{item.rendimento_fixo}</td>
@@ -89,7 +96,7 @@ function TeamValuesPage() {
         <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:hidden">
           {teamValues.map((item) => (
             <li key={item.clube} className="rounded-lg border border-border bg-card p-4 transition-colors hover:bg-accent/30">
-              <Clube item={item} />
+              <Clube item={item} controlador={controladores?.get(item.clube)} />
               <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-border pt-4 text-sm">
                 <div>
                   <dt className="text-xs text-muted-foreground">Objetivo</dt>
