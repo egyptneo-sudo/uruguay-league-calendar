@@ -119,3 +119,14 @@
   border-color: oklch(0.66 0.17 254 / 45%);
   box-shadow: 0 8px 30px -8px var(--glow);
 }
+
+#lovable-badge,
+aside#lovable-badge,
+[id="lovable-badge"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
