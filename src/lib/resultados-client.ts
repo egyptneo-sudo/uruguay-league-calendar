@@ -1,12 +1,10 @@
+// Nota: anon key é pública por design (RLS protege os dados)
+// Hardcoded porque o Lovable não expõe env vars no plano free
 import { createClient } from "@supabase/supabase-js";
 
 export function getResultadosClient() {
-  const supabaseUrl = import.meta.env.VITE_RESULTADOS_SUPABASE_URL as string | undefined;
-  const supabaseAnonKey = import.meta.env.VITE_RESULTADOS_SUPABASE_ANON_KEY as string | undefined;
-
-  if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error("Missing VITE_RESULTADOS_SUPABASE_URL or VITE_RESULTADOS_SUPABASE_ANON_KEY");
-  }
+  const supabaseUrl = "https://jvfkojmutwjoilmmhlce.supabase.co";
+  const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2Zmtvam11dHdqb2lsbW1obGNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA0MDA1NTksImV4cCI6MjEwNTk3NjU1OX0.EU3YBee3zvJX2TKbA3TngActYu3q3FTj3CwSMvqApEU";
 
   return createClient(supabaseUrl, supabaseAnonKey, {
     auth: {
