@@ -35,6 +35,7 @@ export function AppSidebar() {
   }, []);
 
   const isCalendar = location.pathname === "/" || location.pathname.startsWith("/clube/");
+  const isClassificacao = location.pathname.startsWith("/classificacao");
   const isTeamValues = location.pathname.startsWith("/team-values");
   const isAdmin = location.pathname.startsWith("/admin");
 
@@ -72,6 +73,22 @@ export function AppSidebar() {
                 <CalendarDays className="h-4 w-4 shrink-0" aria-hidden="true" />
                 <span className="hidden truncate group-data-[collapsible=icon]:hidden md:inline">
                   Calendário
+                </span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={isClassificacao}
+              tooltip="Classificação"
+              className="group-data-[collapsible=icon]:justify-center"
+            >
+              <Link to="/classificacao" aria-label="Classificação" className="flex w-full items-center gap-3">
+                <Trophy className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <span className="hidden truncate group-data-[collapsible=icon]:hidden md:inline">
+                  Classificação
                 </span>
               </Link>
             </SidebarMenuButton>
