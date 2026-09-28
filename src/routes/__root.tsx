@@ -11,7 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { AppSidebar } from "../components/AppSidebar";
-import { SidebarInset, SidebarProvider } from "../components/ui/sidebar";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "../components/ui/sidebar";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
@@ -144,6 +144,10 @@ function RootComponent() {
       <SidebarProvider>
         <AppSidebar />
         <SidebarInset className="min-h-screen bg-background">
+          <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-border/60 bg-card/95 px-3 backdrop-blur md:hidden">
+            <SidebarTrigger className="h-9 w-9" />
+            <span className="font-display text-base font-bold text-foreground">Liga Uruguaia</span>
+          </header>
           <Outlet />
         </SidebarInset>
       </SidebarProvider>
