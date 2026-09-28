@@ -34,7 +34,9 @@ export function getJogosDaJornada(jornada: number) {
         continue;
       }
 
-      const [casaNull, foraNull] = par.slice().sort((a, b) => a.localeCompare(b));
+      const ordenados = par.slice().sort((a, b) => a.localeCompare(b));
+      const casaNull = ordenados[0] ?? clube.nome;
+      const foraNull = ordenados[1] ?? jogo.adversario;
       if (!jogos.has(key)) {
         jogos.set(key, { casa: casaNull, fora: foraNull });
       }

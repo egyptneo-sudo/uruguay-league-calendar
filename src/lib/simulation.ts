@@ -204,6 +204,7 @@ export function runExhaustiveSimulation(
     }
 
     const nextMatch = openMatches[index];
+    if (!nextMatch) return current;
     for (const outcome of outcomes) {
       buildScenario(index + 1, [...current, { ...nextMatch, result: outcome }]);
     }
