@@ -53,7 +53,7 @@ export function AppSidebar() {
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground">
               <Trophy className="h-4 w-4" aria-hidden="true" />
             </span>
-            <span className="hidden truncate font-display text-base font-bold text-foreground group-data-[collapsible=icon]:hidden md:block">
+            <span className="truncate font-display text-base font-bold text-foreground group-data-[collapsible=icon]:hidden">
               Liga Uruguaia
             </span>
           </Link>
@@ -73,7 +73,7 @@ export function AppSidebar() {
             >
               <Link to="/" aria-label="Calendário" className="flex w-full items-center gap-3">
                 <CalendarDays className="h-4 w-4 shrink-0" aria-hidden="true" />
-                <span className="hidden truncate group-data-[collapsible=icon]:hidden md:inline">
+                <span className="truncate group-data-[collapsible=icon]:hidden">
                   Calendário
                 </span>
               </Link>
@@ -89,7 +89,7 @@ export function AppSidebar() {
             >
               <Link to="/classificacao" aria-label="Classificação" className="flex w-full items-center gap-3">
                 <Trophy className="h-4 w-4 shrink-0" aria-hidden="true" />
-                <span className="hidden truncate group-data-[collapsible=icon]:hidden md:inline">
+                <span className="truncate group-data-[collapsible=icon]:hidden">
                   Classificação
                 </span>
               </Link>
@@ -105,7 +105,7 @@ export function AppSidebar() {
             >
               <Link to="/simulador" aria-label="Simulador" className="flex w-full items-center gap-3">
                 <FlaskConical className="h-4 w-4 shrink-0" aria-hidden="true" />
-                <span className="hidden truncate group-data-[collapsible=icon]:hidden md:inline">
+                <span className="truncate group-data-[collapsible=icon]:hidden">
                   Simulador
                 </span>
               </Link>
@@ -121,7 +121,7 @@ export function AppSidebar() {
             >
               <Link to="/taca" aria-label="Taça" className="flex w-full items-center gap-3">
                 <Trophy className="h-4 w-4 shrink-0" aria-hidden="true" />
-                <span className="hidden truncate group-data-[collapsible=icon]:hidden md:inline">
+                <span className="truncate group-data-[collapsible=icon]:hidden">
                   Taça
                 </span>
               </Link>
@@ -137,7 +137,7 @@ export function AppSidebar() {
             >
               <Link to="/team-values" aria-label="Team Values" className="flex w-full items-center gap-3">
                 <BarChart3 className="h-4 w-4 shrink-0" aria-hidden="true" />
-                <span className="hidden truncate group-data-[collapsible=icon]:hidden md:inline">
+                <span className="truncate group-data-[collapsible=icon]:hidden">
                   Team Values
                 </span>
               </Link>
@@ -154,7 +154,7 @@ export function AppSidebar() {
               >
                 <Link to="/admin" aria-label="Admin" className="flex w-full items-center gap-3">
                   <Settings className="h-4 w-4 shrink-0" aria-hidden="true" />
-                  <span className="hidden truncate group-data-[collapsible=icon]:hidden md:inline">
+                  <span className="truncate group-data-[collapsible=icon]:hidden">
                     Admin
                   </span>
                 </Link>
