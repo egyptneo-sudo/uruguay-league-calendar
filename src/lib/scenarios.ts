@@ -20,6 +20,7 @@ export function enumerateAllScenarios(
     }
 
     const match = openMatches[index];
+    if (!match) return;
     for (const outcome of outcomes) {
       current[match.id] = outcome;
       walk(index + 1, current);

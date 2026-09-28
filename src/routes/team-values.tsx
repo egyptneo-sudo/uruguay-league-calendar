@@ -44,7 +44,7 @@ function ObjetivoBadge({ objetivo }: { objetivo: number }) {
   );
 }
 
-function Clube({ item, controlador }: { item: TeamValue; controlador?: string }) {
+function Clube({ item, controlador }: { item: TeamValue; controlador?: string | undefined }) {
   return (
     <div className="flex min-w-0 flex-col gap-1">
       <div className="flex min-w-0 items-center gap-3">

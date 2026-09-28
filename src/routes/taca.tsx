@@ -33,7 +33,7 @@ type PartidaDisplay = {
   jornada: number;
   casa: string | null;
   fora: string | null;
-  resultado?: ResultadoBanco;
+  resultado?: ResultadoBanco | undefined;
 };
 
 const FASES = [

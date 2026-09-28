@@ -75,7 +75,7 @@ function ClubeNaoEncontrado() {
   );
 }
 
-function Adversario({ jogo, controladores }: { jogo: Jogo; controladores?: Map<string, string> }) {
+function Adversario({ jogo, controladores }: { jogo: Jogo; controladores?: Map<string, string> | undefined }) {
   const controlador = controladores?.get(jogo.adversario) ?? "";
 
   if (jogo.adversario.toLowerCase() === "indefinido") {
@@ -111,8 +111,8 @@ function ClassificacaoResultado({
 }: {
   clubeNome: string;
   jogo: Jogo;
-  resultado?: ResultadoJogo;
-  controladores?: Map<string, string>;
+  resultado?: ResultadoJogo | undefined;
+  controladores?: Map<string, string> | undefined;
 }) {
   if (!resultado || resultado.golos_casa == null || resultado.golos_fora == null) {
     return <Adversario jogo={jogo} />;

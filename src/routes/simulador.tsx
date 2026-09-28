@@ -223,7 +223,7 @@ function SimuladorPage() {
 
     for (const match of selectorMatches) {
       if (match.locked || match.played) continue;
-      next[match.id] = options[Math.floor(Math.random() * options.length)];
+      next[match.id] = options[Math.floor(Math.random() * options.length)] ?? "home";
     }
 
     setSelectedOutcomes(next);

@@ -564,12 +564,12 @@ function AdminPage() {
                       {feedback[row.key] ? (
                         <div
                           className={
-                            feedback[row.key].type === "success"
+                            feedback[row.key]?.type === "success"
                               ? "mt-3 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-500"
                               : "mt-3 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"
                           }
                         >
-                          {feedback[row.key].message}
+                          {feedback[row.key]?.message}
                         </div>
                       ) : null}
                     </div>
