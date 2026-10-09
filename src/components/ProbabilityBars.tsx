@@ -1,13 +1,12 @@
 import { motion } from "framer-motion";
 import { EscudoClube } from "@/components/EscudoClube";
 import { useControladores } from "@/lib/controladores";
-import type { Match, SimulationResult, Team } from "@/lib/simulation";
+import type { SimulationResult, Team } from "@/lib/simulation";
 import { cn } from "@/lib/utils";
 
 interface ProbabilityBarsProps {
   results: SimulationResult[];
   teams: Team[];
-  matches: Match[];
 }
 
 const gradientPalette = [
@@ -23,10 +22,12 @@ const gradientPalette = [
   "from-red-500 via-rose-400 to-orange-400",
 ];
 
-export function ProbabilityBars({ results, teams, matches }: ProbabilityBarsProps) {
+export function ProbabilityBars({ results, teams }: ProbabilityBarsProps) {
   const { data: controladores } = useControladores();
   const leader = [...teams].sort((a, b) => b.points - a.points)[0];
-  const openMatches = matches.filter((match) => match.result == null && !match.locked && !match.played).length;
+  const leaderIsChampion = Boolean(
+    leader && teams.every((team) => team.id === leader.id || (team.maxPoints ?? team.points) < leader.points),
+  );
 
   const resultMap = new Map(results.map((result) => [result.teamId, result]));
 
@@ -35,15 +36,13 @@ export function ProbabilityBars({ results, teams, matches }: ProbabilityBarsProp
     const hasManager = Boolean(controladores?.has(team.name));
     const probability = hasManager ? result?.probability ?? 0 : 0;
 
-    const maxPossible = (team.points ?? 0) + openMatches * 3;
+    const maxPossible = team.maxPoints ?? team.points;
     const status = hasManager
-      ? probability >= 100
+      ? leaderIsChampion && team.id === leader?.id
         ? "Campeão"
-        : probability > 0
-          ? "Na corrida"
-          : leader && maxPossible < leader.points
-            ? "Eliminado"
-            : "Na corrida"
+        : leader && team.id !== leader.id && maxPossible < leader.points
+          ? "Eliminado"
+          : "Na corrida"
       : "Sem manager";
 
     return {

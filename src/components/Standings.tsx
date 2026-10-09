@@ -45,7 +45,9 @@ export function Standings({ teams }: StandingsProps) {
                 </td>
                 <td className="px-3 py-3 font-semibold text-foreground">{team.points}</td>
                 <td className="px-3 py-3 text-muted-foreground">{team.played}</td>
-                <td className="px-3 py-3 text-muted-foreground">{team.maxPoints ?? team.points}</td>
+                <td className="px-3 py-3 text-muted-foreground">
+                  {team.maxPoints === team.points ? "—" : team.maxPoints ?? team.points}
+                </td>
                 <td className="px-3 py-3 text-muted-foreground">{Math.max(0, team.points)}%</td>
               </tr>
             ))}

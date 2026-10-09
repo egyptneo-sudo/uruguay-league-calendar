@@ -16,6 +16,17 @@ import { getResultadosClient } from "@/lib/resultados-client";
 import { calculateStandings, type Match, type MatchOutcome, type SimulationResult, type Team } from "@/lib/simulation";
 
 const CUP_ROUNDS = new Set([7, 16, 24, 33]);
+const LEAGUE_GAMES_BY_TEAM = new Map(
+  liga.clubes.map((clube) => [
+    clube.nome,
+    clube.jogos.filter(
+      (jogo) =>
+        !CUP_ROUNDS.has(jogo.jornada) &&
+        jogo.casa !== null &&
+        jogo.adversario.toLowerCase() !== "indefinido",
+    ).length,
+  ]),
+);
 
 function toOutcome(
   localGoals: number | null,
@@ -195,7 +206,16 @@ function SimuladorPage() {
   );
 
   const standings = useMemo(
-    () => calculateStandings(teams, standingsMatches),
+    () =>
+      calculateStandings(teams, standingsMatches).map((team) => {
+        const leagueGames = LEAGUE_GAMES_BY_TEAM.get(team.name) ?? 0;
+        const remainingGames = Math.max(0, leagueGames - team.played);
+
+        return {
+          ...team,
+          maxPoints: team.points + remainingGames * 3,
+        };
+      }),
     [teams, standingsMatches],
   );
 
@@ -278,7 +298,6 @@ function SimuladorPage() {
                   <ProbabilityBars
                     results={monteCarloResults}
                     teams={standings}
-                    matches={standingsMatches}
                   />
                 </TabsContent>
 
