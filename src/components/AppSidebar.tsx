@@ -36,6 +36,7 @@ export function AppSidebar() {
 
   const isCalendar = location.pathname === "/" || location.pathname.startsWith("/clube/");
   const isClassificacao = location.pathname.startsWith("/classificacao");
+  const isEstatisticas = location.pathname.startsWith("/estatisticas");
   const isSimulador = location.pathname.startsWith("/simulador");
   const isTaca = location.pathname.startsWith("/taca");
   const isTeamValues = location.pathname.startsWith("/team-values");
@@ -75,6 +76,22 @@ export function AppSidebar() {
                 <CalendarDays className="h-4 w-4 shrink-0" aria-hidden="true" />
                 <span className="truncate group-data-[collapsible=icon]:hidden">
                   Calendário
+                </span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={isEstatisticas}
+              tooltip="Estatísticas"
+              className="group-data-[collapsible=icon]:justify-center"
+            >
+              <Link to="/estatisticas" aria-label="Estatísticas" className="flex w-full items-center gap-3">
+                <BarChart3 className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <span className="truncate group-data-[collapsible=icon]:hidden">
+                  Estatísticas
                 </span>
               </Link>
             </SidebarMenuButton>

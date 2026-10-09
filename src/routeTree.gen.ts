@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as ClassificacaoRouteImport } from './routes/classificacao'
+import { Route as EstatisticasRouteImport } from './routes/estatisticas'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as SimuladorRouteImport } from './routes/simulador'
 import { Route as TacaRouteImport } from './routes/taca'
@@ -31,6 +32,11 @@ const AdminRoute = AdminRouteImport.update({
 const ClassificacaoRoute = ClassificacaoRouteImport.update({
   id: '/classificacao',
   path: '/classificacao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EstatisticasRoute = EstatisticasRouteImport.update({
+  id: '/estatisticas',
+  path: '/estatisticas',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -63,6 +69,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/classificacao': typeof ClassificacaoRoute
+  '/estatisticas': typeof EstatisticasRoute
   '/login': typeof LoginRoute
   '/simulador': typeof SimuladorRoute
   '/taca': typeof TacaRoute
@@ -73,6 +80,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/classificacao': typeof ClassificacaoRoute
+  '/estatisticas': typeof EstatisticasRoute
   '/login': typeof LoginRoute
   '/simulador': typeof SimuladorRoute
   '/taca': typeof TacaRoute
@@ -84,6 +92,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/classificacao': typeof ClassificacaoRoute
+  '/estatisticas': typeof EstatisticasRoute
   '/login': typeof LoginRoute
   '/simulador': typeof SimuladorRoute
   '/taca': typeof TacaRoute
@@ -96,6 +105,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/classificacao'
+    | '/estatisticas'
     | '/login'
     | '/simulador'
     | '/taca'
@@ -106,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/classificacao'
+    | '/estatisticas'
     | '/login'
     | '/simulador'
     | '/taca'
@@ -116,6 +127,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/classificacao'
+    | '/estatisticas'
     | '/login'
     | '/simulador'
     | '/taca'
@@ -127,6 +139,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   ClassificacaoRoute: typeof ClassificacaoRoute
+  EstatisticasRoute: typeof EstatisticasRoute
   LoginRoute: typeof LoginRoute
   SimuladorRoute: typeof SimuladorRoute
   TacaRoute: typeof TacaRoute
@@ -155,6 +168,13 @@ declare module '@tanstack/react-router' {
       path: '/classificacao'
       fullPath: '/classificacao'
       preLoaderRoute: typeof ClassificacaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/estatisticas': {
+      id: '/estatisticas'
+      path: '/estatisticas'
+      fullPath: '/estatisticas'
+      preLoaderRoute: typeof EstatisticasRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -199,6 +219,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   ClassificacaoRoute: ClassificacaoRoute,
+  EstatisticasRoute: EstatisticasRoute,
   LoginRoute: LoginRoute,
   SimuladorRoute: SimuladorRoute,
   TacaRoute: TacaRoute,

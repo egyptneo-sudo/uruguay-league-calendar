@@ -1,6 +1,7 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import type { Session } from "@supabase/supabase-js";
 import { useEffect, useMemo, useState } from "react";
+import { EstatisticasJogadores } from "@/components/EstatisticasJogadores";
 import { EscudoClube } from "@/components/EscudoClube";
 import { TotmEditor } from "@/components/TotmEditor";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -17,7 +18,7 @@ type ResultadoRow = {
   jogado: boolean;
 };
 
-type AdminTab = "resultados" | "controladores" | "taca" | "totm";
+type AdminTab = "resultados" | "controladores" | "taca" | "totm" | "estatisticas";
 
 type TacaFase = "quartos" | "meias" | "final";
 
@@ -444,7 +445,9 @@ function AdminPage() {
                   ? "Controladores"
                   : activeTab === "taca"
                     ? "Taça"
-                    : "TOTM"}
+                    : activeTab === "totm"
+                      ? "TOTM"
+                      : "Estatísticas"}
             </h1>
           </div>
 
@@ -461,11 +464,12 @@ function AdminPage() {
         </header>
 
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as AdminTab)} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 md:w-auto">
+          <TabsList className="grid w-full grid-cols-5 md:w-auto">
             <TabsTrigger value="resultados">Resultados</TabsTrigger>
             <TabsTrigger value="controladores">Controladores</TabsTrigger>
             <TabsTrigger value="taca">Taça</TabsTrigger>
             <TabsTrigger value="totm">TOTM</TabsTrigger>
+            <TabsTrigger value="estatisticas">Estatísticas</TabsTrigger>
           </TabsList>
 
           <TabsContent value="resultados">
@@ -661,6 +665,10 @@ function AdminPage() {
 
           <TabsContent value="totm">
             <TotmEditor />
+          </TabsContent>
+
+          <TabsContent value="estatisticas">
+            <EstatisticasJogadores />
           </TabsContent>
         </Tabs>
       </div>
