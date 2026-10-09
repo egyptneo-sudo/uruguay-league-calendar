@@ -2,6 +2,7 @@ import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import type { Session } from "@supabase/supabase-js";
 import { useEffect, useMemo, useState } from "react";
 import { EscudoClube } from "@/components/EscudoClube";
+import { TotmEditor } from "@/components/TotmEditor";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { liga } from "@/lib/liga";
 import { getResultadosClient } from "@/lib/resultados-client";
@@ -16,7 +17,7 @@ type ResultadoRow = {
   jogado: boolean;
 };
 
-type AdminTab = "resultados" | "controladores" | "taca";
+type AdminTab = "resultados" | "controladores" | "taca" | "totm";
 
 type TacaFase = "quartos" | "meias" | "final";
 
@@ -437,7 +438,13 @@ function AdminPage() {
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Admin</p>
             <h1 className="mt-2 font-display text-3xl font-bold text-foreground">
-              {activeTab === "resultados" ? "Resultados" : activeTab === "controladores" ? "Controladores" : "Taça"}
+              {activeTab === "resultados"
+                ? "Resultados"
+                : activeTab === "controladores"
+                  ? "Controladores"
+                  : activeTab === "taca"
+                    ? "Taça"
+                    : "TOTM"}
             </h1>
           </div>
 
@@ -454,10 +461,11 @@ function AdminPage() {
         </header>
 
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as AdminTab)} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 md:w-auto">
+          <TabsList className="grid w-full grid-cols-4 md:w-auto">
             <TabsTrigger value="resultados">Resultados</TabsTrigger>
             <TabsTrigger value="controladores">Controladores</TabsTrigger>
             <TabsTrigger value="taca">Taça</TabsTrigger>
+            <TabsTrigger value="totm">TOTM</TabsTrigger>
           </TabsList>
 
           <TabsContent value="resultados">
@@ -649,6 +657,10 @@ function AdminPage() {
               {renderTacaFase("meias", [1, 2], "Meias-Finais")}
               {renderTacaFase("final", [1], "Final")}
             </div>
+          </TabsContent>
+
+          <TabsContent value="totm">
+            <TotmEditor />
           </TabsContent>
         </Tabs>
       </div>
